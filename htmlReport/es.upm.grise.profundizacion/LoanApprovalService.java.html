@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoanApprovalService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jacoco.exec</a> &gt; <a href="index.source.html" class="el_package">es.upm.grise.profundizacion</a> &gt; <span class="el_source">LoanApprovalService.java</span></div><h1>LoanApprovalService.java</h1><pre class="source lang-java linenums">package es.upm.grise.profundizacion;
+
+import java.util.Objects;
+
+<span class="fc" id="L5">public class LoanApprovalService {</span>
+
+    /**
+     * Método X: contiene decisiones encadenadas y compuestas para análisis estructural.
+     * &lt;p&gt;
+     * Regla (simplificada):
+     * - Entradas inválidas -&gt; excepción
+     * - Score &lt; 500 -&gt; REJECTED
+     * - 500..649 -&gt; si income alto y no tiene impagos -&gt; MANUAL_REVIEW; si no -&gt; REJECTED
+     * - &gt;= 650 -&gt; si amount &lt;= income*8 -&gt; APPROVED; si no -&gt; MANUAL_REVIEW
+     * - Además, si el cliente es VIP y score&gt;=600 y no tiene impagos -&gt; se eleva a APPROVED si estaba en MANUAL_REVIEW
+     */
+    public Decision evaluateLoan(
+            Applicant applicant,
+            int amountRequested,
+            int termMonths
+    ) {
+        //N1: inicio de ejecucion:
+<span class="fc" id="L23">        validate(applicant, amountRequested, termMonths);</span>
+
+<span class="fc" id="L25">        int score = applicant.creditScore();</span>
+<span class="fc" id="L26">        boolean hasDefaults = applicant.hasRecentDefaults();</span>
+<span class="fc" id="L27">        int income = applicant.monthlyIncome();</span>
+
+        Decision decision;
+
+<span class="fc bfc" id="L31" title="All 2 branches covered.">        if (score &lt; 500) {</span>
+            //N2: score&lt;500
+<span class="fc" id="L33">            decision = Decision.REJECTED;</span>
+        } else
+            //N3: score&gt;=500
+<span class="fc bfc" id="L36" title="All 2 branches covered.">            if (score &lt; 650) {</span>
+                //N4: score&lt;650
+<span class="pc bpc" id="L38" title="1 of 4 branches missed.">                if (income &gt;= 2500 &amp;&amp; !hasDefaults) {</span>
+                    //N6: income &gt;= 2500 &amp;&amp; !hasDefaults
+<span class="fc" id="L40">                    decision = Decision.MANUAL_REVIEW;</span>
+                } else {
+                    //N7: income &lt; 2500 || hasDefaults
+<span class="fc" id="L43">                    decision = Decision.REJECTED;</span>
+                }
+            } else //N5: score&gt;=650
+            {
+<span class="fc bfc" id="L47" title="All 2 branches covered.">                if (amountRequested &lt;= income * 8) {</span>
+                    //N8: amountRequested &lt;= income * 8
+<span class="fc" id="L49">                    decision = Decision.APPROVED;</span>
+                } else {
+                    //N9: amountRequested &gt; income * 8
+<span class="fc" id="L52">                    decision = Decision.MANUAL_REVIEW;</span>
+                }
+            }
+
+        //N10: join of all previous ifelse
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        if (decision == Decision.MANUAL_REVIEW</span>
+<span class="pc bpc" id="L58" title="2 of 6 branches missed.">                &amp;&amp; applicant.isVip()</span>
+                &amp;&amp; score &gt;= 600
+                &amp;&amp; !hasDefaults) {
+            //N11: manual review
+<span class="fc" id="L62">            decision = Decision.APPROVED;</span>
+        }
+
+        //N12: end node
+<span class="fc" id="L66">        return decision;</span>
+    }
+
+    private void validate(Applicant applicant, int amountRequested, int termMonths) {
+<span class="fc" id="L70">        Objects.requireNonNull(applicant, &quot;applicant cannot be null&quot;);</span>
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        if (amountRequested &lt;= 0) {</span>
+<span class="nc" id="L72">            throw new IllegalArgumentException(&quot;amountRequested must be &gt; 0&quot;);</span>
+        }
+<span class="pc bpc" id="L74" title="2 of 4 branches missed.">        if (termMonths &lt; 6 || termMonths &gt; 84) {</span>
+<span class="nc" id="L75">            throw new IllegalArgumentException(&quot;termMonths must be between 6 and 84&quot;);</span>
+        }
+<span class="pc bpc" id="L77" title="1 of 2 branches missed.">        if (applicant.monthlyIncome() &lt;= 0) {</span>
+<span class="nc" id="L78">            throw new IllegalArgumentException(&quot;monthlyIncome must be &gt; 0&quot;);</span>
+        }
+<span class="pc bpc" id="L80" title="2 of 4 branches missed.">        if (applicant.creditScore() &lt; 0 || applicant.creditScore() &gt; 850) {</span>
+<span class="nc" id="L81">            throw new IllegalArgumentException(&quot;creditScore must be between 0 and 850&quot;);</span>
+        }
+<span class="fc" id="L83">    }</span>
+
+<span class="fc" id="L85">    public enum Decision {</span>
+<span class="fc" id="L86">        APPROVED, MANUAL_REVIEW, REJECTED</span>
+    }
+
+<span class="fc" id="L89">    public record Applicant(int monthlyIncome, int creditScore, boolean hasRecentDefaults, boolean isVip) {</span>
+    }
+}
+
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>

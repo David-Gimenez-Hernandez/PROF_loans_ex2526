@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="es"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LoanApprovalServiceTest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">jacoco.exec</a> &gt; <a href="index.source.html" class="el_package">es.upm.grise.profundizacion</a> &gt; <span class="el_source">LoanApprovalServiceTest.java</span></div><h1>LoanApprovalServiceTest.java</h1><pre class="source lang-java linenums">package es.upm.grise.profundizacion;
+
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+<span class="fc" id="L7">public class LoanApprovalServiceTest {</span>
+    
+<span class="fc" id="L9">    private final LoanApprovalService service = new LoanApprovalService();</span>
+
+    @Test
+    void TODO_caso_camino_basico_1() {
+        //N 1,2,10,11,12
+        // No es accesible por logica el estado 2 y el 11 en la misma ejecucion (no hay manual review)
+<span class="fc" id="L15">        assertTrue(true);</span>
+<span class="fc" id="L16">    }</span>
+
+    @Test
+    void TODO_caso_camino_basico_2() {
+        //N 1,2,10,12
+<span class="fc" id="L21">        LoanApprovalService.Applicant applicant = new LoanApprovalService.Applicant(</span>
+                1000,
+                1,
+                true,
+                true);
+<span class="fc" id="L26">        LoanApprovalService loanApprovalService = new LoanApprovalService();</span>
+<span class="fc" id="L27">        LoanApprovalService.Decision result = loanApprovalService.evaluateLoan(applicant,</span>
+                2000,
+                6);
+
+<span class="fc" id="L31">        assertEquals(LoanApprovalService.Decision.REJECTED, result);</span>
+<span class="fc" id="L32">    }</span>
+
+    @Test
+    void TODO_caso_camino_basico_3() {
+        //N 1,3,5,8,10,11,12
+        //No es posible, N 8 y 11 no son compatibles en la misma ejecucion (no hay manual review)
+<span class="fc" id="L38">        assertTrue(true);</span>
+<span class="fc" id="L39">    }</span>
+
+    @Test
+    void TODO_caso_camino_basico_4() {
+        //N 1,3,5,8,10,12
+<span class="fc" id="L44">        LoanApprovalService.Applicant applicant = new LoanApprovalService.Applicant(</span>
+                1000,
+                800,
+                true,
+                true);
+<span class="fc" id="L49">        LoanApprovalService loanApprovalService = new LoanApprovalService();</span>
+<span class="fc" id="L50">        LoanApprovalService.Decision result = loanApprovalService.evaluateLoan(applicant,</span>
+                2000,
+                6);
+
+<span class="fc" id="L54">        assertEquals(LoanApprovalService.Decision.APPROVED, result);</span>
+<span class="fc" id="L55">    }</span>
+
+    @Test
+    void TODO_caso_camino_basico_5() {
+        //N 1,3,4,6,10,11,12
+<span class="fc" id="L60">        LoanApprovalService.Applicant applicant = new LoanApprovalService.Applicant(</span>
+                3000,
+                600,
+                false,
+                true);
+<span class="fc" id="L65">        LoanApprovalService loanApprovalService = new LoanApprovalService();</span>
+<span class="fc" id="L66">        LoanApprovalService.Decision result = loanApprovalService.evaluateLoan(applicant,</span>
+                2000,
+                6);
+
+<span class="fc" id="L70">        assertEquals(LoanApprovalService.Decision.APPROVED, result);</span>
+<span class="fc" id="L71">    }</span>
+
+    @Test
+    void TODO_caso_camino_basico_6() {
+        //N 1,3,4,6,10,12
+<span class="fc" id="L76">        LoanApprovalService.Applicant applicant = new LoanApprovalService.Applicant(</span>
+                3000,
+                600,
+                false,
+                false);
+<span class="fc" id="L81">        LoanApprovalService loanApprovalService = new LoanApprovalService();</span>
+<span class="fc" id="L82">        LoanApprovalService.Decision result = loanApprovalService.evaluateLoan(applicant,</span>
+                2000,
+                6);
+
+<span class="fc" id="L86">        assertEquals(LoanApprovalService.Decision.MANUAL_REVIEW, result);</span>
+<span class="fc" id="L87">    }</span>
+
+    @Test
+    void TODO_caso_camino_basico_7() {
+        //N 1,3,5,9,10,11,12
+<span class="fc" id="L92">        LoanApprovalService.Applicant applicant = new LoanApprovalService.Applicant(</span>
+                1,
+                800,
+                false,
+                true);
+<span class="fc" id="L97">        LoanApprovalService loanApprovalService = new LoanApprovalService();</span>
+<span class="fc" id="L98">        LoanApprovalService.Decision result = loanApprovalService.evaluateLoan(applicant,</span>
+                2000,
+                6);
+
+<span class="fc" id="L102">        assertEquals(LoanApprovalService.Decision.APPROVED, result);</span>
+<span class="fc" id="L103">    }</span>
+
+    @Test
+    void TODO_caso_camino_basico_8() {
+        //N 1,3,5,9,10,12
+<span class="fc" id="L108">        LoanApprovalService.Applicant applicant = new LoanApprovalService.Applicant(</span>
+                1,
+                800,
+                false,
+                false);
+<span class="fc" id="L113">        LoanApprovalService loanApprovalService = new LoanApprovalService();</span>
+<span class="fc" id="L114">        LoanApprovalService.Decision result = loanApprovalService.evaluateLoan(applicant,</span>
+                2000,
+                6);
+
+<span class="fc" id="L118">        assertEquals(LoanApprovalService.Decision.MANUAL_REVIEW, result);</span>
+<span class="fc" id="L119">    }</span>
+
+    void TODO_caso_camino_basico_9() {
+        //N 1,3,4,7,10,11,12
+        //No es posible, N 7 y 11 no son compatibles en la misma ejecucion (no hay manual review)
+<span class="nc" id="L124">        assertTrue(true);</span>
+<span class="nc" id="L125">    }</span>
+
+    @Test
+    void TODO_caso_camino_basico_10() {
+        //N 1,3,4,7,10,12
+<span class="fc" id="L130">        LoanApprovalService.Applicant applicant = new LoanApprovalService.Applicant(</span>
+                1,
+                600,
+                true,
+                false);
+<span class="fc" id="L135">        LoanApprovalService loanApprovalService = new LoanApprovalService();</span>
+<span class="fc" id="L136">        LoanApprovalService.Decision result = loanApprovalService.evaluateLoan(applicant,</span>
+                2000,
+                6);
+
+<span class="fc" id="L140">        assertEquals(LoanApprovalService.Decision.REJECTED, result);</span>
+<span class="fc" id="L141">    }</span>
+
+    
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.12.202403310830</span></div></body></html>
