@@ -6,7 +6,7 @@ public class LoanApprovalService {
 
     /**
      * Método X: contiene decisiones encadenadas y compuestas para análisis estructural.
-     *
+     * <p>
      * Regla (simplificada):
      * - Entradas inválidas -> excepción
      * - Score < 500 -> REJECTED
@@ -19,6 +19,7 @@ public class LoanApprovalService {
             int amountRequested,
             int termMonths
     ) {
+        //N1: inicio de ejecucion:
         validate(applicant, amountRequested, termMonths);
 
         int score = applicant.creditScore();
@@ -28,28 +29,40 @@ public class LoanApprovalService {
         Decision decision;
 
         if (score < 500) {
+            //N2: score<500
             decision = Decision.REJECTED;
-        } else if (score < 650) {
-            if (income >= 2500 && !hasDefaults) {
-                decision = Decision.MANUAL_REVIEW;
-            } else {
-                decision = Decision.REJECTED;
+        } else
+            //N3: score>=500
+            if (score < 650) {
+                //N4: score<650
+                if (income >= 2500 && !hasDefaults) {
+                    //N6: income >= 2500 && !hasDefaults
+                    decision = Decision.MANUAL_REVIEW;
+                } else {
+                    //N7: income < 2500 || hasDefaults
+                    decision = Decision.REJECTED;
+                }
+            } else //N5: score>=650
+            {
+                if (amountRequested <= income * 8) {
+                    //N8: amountRequested <= income * 8
+                    decision = Decision.APPROVED;
+                } else {
+                    //N9: amountRequested > income * 8
+                    decision = Decision.MANUAL_REVIEW;
+                }
             }
-        } else {
-            if (amountRequested <= income * 8) {
-                decision = Decision.APPROVED;
-            } else {
-                decision = Decision.MANUAL_REVIEW;
-            }
-        }
 
+        //N10: join of all previous ifelse
         if (decision == Decision.MANUAL_REVIEW
                 && applicant.isVip()
                 && score >= 600
                 && !hasDefaults) {
+            //N11: manual review
             decision = Decision.APPROVED;
         }
 
+        //N12: end node
         return decision;
     }
 
@@ -73,6 +86,7 @@ public class LoanApprovalService {
         APPROVED, MANUAL_REVIEW, REJECTED
     }
 
-    public record Applicant(int monthlyIncome, int creditScore, boolean hasRecentDefaults, boolean isVip) { }
+    public record Applicant(int monthlyIncome, int creditScore, boolean hasRecentDefaults, boolean isVip) {
+    }
 }
 
