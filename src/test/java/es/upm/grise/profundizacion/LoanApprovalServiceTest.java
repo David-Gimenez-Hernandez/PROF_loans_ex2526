@@ -99,6 +99,7 @@ public class LoanApprovalServiceTest {
                 2000,
                 6);
 
+
         assertEquals(LoanApprovalService.Decision.APPROVED, result);
     }
 
